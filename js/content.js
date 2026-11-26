@@ -26,17 +26,19 @@ window.CONTENT = {
     nom: "KARUKERA",
     numero: "Édition 01",
     accroche: "L'île aux belles eaux.",
-    texte: "Karukera, c'est le nom que les Kalinagos donnaient à la Guadeloupe. Pour notre première édition, on lui rend hommage : le soleil qui se lève sur le corail, la vague, les hibiscus. Un dos illustré façon gravure, l'emblème Tropikal Heat au cœur.",
+    texte: "Karukera, c'est le nom que les Kalinagos donnaient à la Guadeloupe. Pour notre première édition, on lui rend hommage : le soleil qui se lève sur le corail, la vague, les hibiscus. Un dos illustré façon gravure, le monogramme TH au cœur.",
     stock: 50,
     variantes: [
-      { id: "noir",  nom: "T-shirt noir · impression blanche",  image: "assets/karukera-blanc.webp", fond: "#0b0b0b" },
-      { id: "blanc", nom: "T-shirt blanc · impression noire",   image: "assets/karukera-noir.webp",  fond: "#f4f1ec" }
+      { id: "noir-degrade",  nom: "Noir · dos en dégradé",       image: "assets/lookbook/dos-degrade-noir.webp",  fond: "#0b0b0b", clair: false },
+      { id: "blanc-degrade", nom: "Blanc · dos en dégradé",      image: "assets/lookbook/dos-degrade-blanc.webp", fond: "#f4f1ec", clair: true },
+      { id: "noir",          nom: "Noir · impression blanche",   image: "assets/lookbook/dos-nb-noir.webp",       fond: "#0b0b0b", clair: false },
+      { id: "blanc",         nom: "Blanc · impression noire",    image: "assets/lookbook/dos-nb-blanc.webp",      fond: "#f4f1ec", clair: true }
     ],
     prix: "40 €",
     tailles: ["S", "M", "L"],
     details: [
       "Coton 190 g/m², coupe unisexe",
-      "Logo cœur 9 cm · dos 27 × 40 cm",
+      "Monogramme TH au cœur 6 cm · dos 27 × 40 cm",
       "Impression DTF réalisée en Guadeloupe",
       "Édition limitée à 50 pièces"
     ],

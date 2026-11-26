@@ -92,7 +92,7 @@
       img.src = v.image;
       img.alt = `Dos KARUKERA, ${v.nom}`;
       stage.style.background = v.fond;
-      stage.classList.toggle("light", v.id === "blanc");
+      stage.classList.toggle("light", !!v.clair);
       $$("button", vWrap).forEach((b) => b.setAttribute("aria-pressed", b.dataset.id === v.id));
     };
     E.variantes.forEach((v) => {

@@ -115,7 +115,7 @@ a { color: inherit; }
 
 /* ---------- Bandeau défilant ---------- */
 .marquee { overflow: hidden; background: var(--heat-x); color: #000; padding: 16px 0; }
-.marquee-track { display: flex; width: max-content; gap: 2.2rem; animation: slide 38s linear infinite; }
+.marquee-track { display: flex; width: max-content; gap: 2.2rem; animation: slide 110s linear infinite; }
 .marquee-track span { font: 400 1.9rem/1 var(--gothic); white-space: nowrap; }
 .marquee-track i { font-style: normal; font-size: 1.2rem; align-self: center; }
 @keyframes slide { to { transform: translateX(-50%); } }

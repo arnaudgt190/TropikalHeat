@@ -19,7 +19,7 @@ window.CONTENT = {
     titre: "Le soleil de l'archipel, à porter tous les jours.",
     texte: "Tropikal Heat, c'est la chaleur des îles cousue dans un streetwear propre, pensé pour la vie de tous les jours. Des pièces imprimées en Guadeloupe.",
     bouton: "Découvrir l'édition KARUKERA",
-    bandeau: ["Édition limitée", "Imprimé en Guadeloupe", "Feel the heat", "Made in Guadeloupe"]
+    bandeau: ["Édition limitée", "Imprimé en Guadeloupe", "Feel the heat", "Karukera", "Made in Guadeloupe", "Précommande ouverte", "971", "Streetwear des îles", "L'île aux belles eaux"]
   },
 
   edition: {

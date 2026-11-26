@@ -14,12 +14,12 @@ window.CONTENT = {
     ville: "Le Gosier, Guadeloupe"
   },
 
-  accueil: {
+    accueil: {
     surtitre: "Streetwear né en Guadeloupe",
     titre: "Le soleil de l'archipel, à porter tous les jours.",
     texte: "Tropikal Heat, c'est la chaleur des îles cousue dans un streetwear propre, pensé pour la vie de tous les jours. Des pièces imprimées en Guadeloupe.",
     bouton: "Découvrir l'édition KARUKERA",
-    bandeau: ["Édition limitée", "Streetwear des îles", "Feel the heat", "Made in Guadeloupe", "Précommande ouverte"]
+    bandeau: ["Édition limitée", "Streetwear des îles", "Feel the heat", "Karukera", "Made in Guadeloupe", "Précommande ouverte", "971", "L'île aux belles eaux"]
   },
 
   edition: {

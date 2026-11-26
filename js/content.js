@@ -17,9 +17,9 @@ window.CONTENT = {
   accueil: {
     surtitre: "Streetwear né en Guadeloupe",
     titre: "Le soleil de l'archipel, à porter tous les jours.",
-    texte: "Tropikal Heat, c'est la chaleur des îles cousue dans un streetwear propre, pensé pour la vie de tous les jours. Des pièces en édition limitée, imprimées en Guadeloupe.",
+    texte: "Tropikal Heat, c'est la chaleur des îles cousue dans un streetwear propre, pensé pour la vie de tous les jours. Des pièces imprimées en Guadeloupe.",
     bouton: "Découvrir l'édition KARUKERA",
-    bandeau: ["Édition limitée", "Imprimé en Guadeloupe", "Feel the heat", "971"]
+    bandeau: ["Édition limitée", "Imprimé en Guadeloupe", "Feel the heat", "Made in Guadeloupe"]
   },
 
   edition: {
@@ -57,7 +57,7 @@ window.CONTENT = {
     piliers: [
       { titre: "Archipel", texte: "Chaque édition raconte un lieu, une histoire, un nom de chez nous." },
       { titre: "Culture",  texte: "Des visuels travaillés comme des gravures, entre héritage et street." },
-      { titre: "971",      texte: "Pensé, dessiné et imprimé en Guadeloupe. On fait vivre le local." }
+      { titre: "Vibration",texte: "Pensé, dessiné et imprimé en Guadeloupe. On fait vivre le local." }
     ],
     signature: "Arnaud, fondateur de Tropikal Heat"
   },

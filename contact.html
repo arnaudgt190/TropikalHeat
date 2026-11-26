@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact · Tropikal Heat</title>
+<meta name="description" content="Contacte Tropikal Heat : précommande, taille, collaboration.">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500&amp;display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="contact">
+<header id="header"></header>
+<main>
+<section class="page-head wrap">
+  <p class="label" data-c="marque.ville"></p>
+  <h1 data-c="contact.titre"></h1>
+  <p data-c="contact.texte"></p>
+</section>
+
+<form class="contact-box wrap" id="contact-form">
+  <label>Ton nom<input name="nom" required autocomplete="name"></label>
+  <label>Ton email<input name="email" type="email" required autocomplete="email"></label>
+  <label>Sujet<select name="sujet" id="sujet"></select></label>
+  <label>Message<textarea name="message" required></textarea></label>
+  <button class="btn" type="submit">Envoyer</button>
+</form>
+</main>
+<footer id="footer"></footer>
+<script src="js/content.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KARUKERA · Édition 01 · Tropikal Heat</title>
+<meta name="description" content="Précommande ouverte : t-shirt KARUKERA, édition limitée à 50 pièces, imprimé en Guadeloupe.">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500&amp;display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body data-page="edition">
+<header id="header"></header>
+<main>
+<div class="wrap product">
+  <div class="product-stage">
+    <span class="tag" data-c="edition.numero"></span>
+    <img id="variant-img" src="assets/karukera-blanc.webp" alt="" width="900" height="1344">
+  </div>
+  <div>
+    <p class="label" data-c="edition.accroche"></p>
+    <h1 class="ed-title heat-text" data-c="edition.nom"></h1>
+    <p class="ed-text" data-c="edition.texte"></p>
+    <p class="price" data-c="edition.prix"></p>
+
+    <p class="opt-label" id="lbl-variant">Couleur</p>
+    <div id="variants" role="group" aria-labelledby="lbl-variant"></div>
+
+    <p class="opt-label" id="lbl-size">Taille</p>
+    <div id="sizes" role="group" aria-labelledby="lbl-size"></div>
+
+    <div class="preorder">
+      <h2 data-c="edition.precommande.titre"></h2>
+      <p data-c="edition.precommande.texte"></p>
+      <button class="btn" id="precommande" type="button">Je précommande</button>
+      <p class="stock">Édition limitée à <span data-c="edition.stock"></span> pièces</p>
+    </div>
+
+    <ul class="details" data-list="edition.details"><template><li data-f="x"></li></template></ul>
+  </div>
+</div>
+</main>
+<footer id="footer"></footer>
+<script src="js/content.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

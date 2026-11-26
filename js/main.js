@@ -18,6 +18,7 @@
   const nav = [
     ["index.html", "Accueil", "accueil"],
     ["karukera.html", "Karukera", "edition"],
+    ["lookbook.html", "Lookbook", "lookbook"],
     ["univers.html", "Univers", "univers"],
     ["contact.html", "Contact", "contact"]
   ];

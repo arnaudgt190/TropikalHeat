@@ -452,6 +452,26 @@
     track.addEventListener("touchstart", stop, { passive: true });
   });
 
+  /* ---------- Hibiscus lumineux qui flottent en fond (décoratifs) ----------
+     Position en % de la hauteur de la page, côté gauche/droite, taille, rotation. */
+  const FLEURS = {
+    accueil:  [[30, "r", 1, -12], [62, "l", 0.8, 18]],
+    edition:  [[8, "l", 0.7, 14], [80, "r", 0.8, -10]],
+    univers:  [[6, "l", 0.9, -14], [40, "r", 1, 12], [78, "l", 0.75, 20]],
+    contact:  [[12, "r", 0.9, 16], [58, "l", 0.8, -12]],
+    panier:   [[8, "r", 0.8, -16], [60, "l", 0.9, 10]],
+    "404":    [[10, "l", 1, -10], [40, "r", 0.85, 16]]
+  };
+  const main = $("main");
+  if (main && FLEURS[page]) {
+    const flora = document.createElement("div");
+    flora.className = "flora";
+    flora.setAttribute("aria-hidden", "true");
+    flora.innerHTML = FLEURS[page].map(([top, cote, taille, rot], i) =>
+      `<img class="hib hib-${cote}" src="assets/hibiscus-glow.webp" alt="" style="top:${top}%;--s:${taille};--r:${rot}deg;--d:${9 + i * 2.5}s;--delay:${-i * 3}s">`).join("");
+    main.prepend(flora);
+  }
+
   /* ---------- Apparition douce au défilement ---------- */
   const io = "IntersectionObserver" in window
     ? new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && e.target.classList.add("in")), { threshold: 0.05, rootMargin: "0px 0px -40px 0px" })

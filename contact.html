@@ -37,7 +37,9 @@
   <label>Ton email<input name="email" type="email" required autocomplete="email"></label>
   <label>Sujet<select name="sujet" id="sujet"></select></label>
   <label>Message<textarea name="message" required></textarea></label>
+  <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true">
   <button class="btn" type="submit">Envoyer</button>
+  <p class="form-msg" role="status" aria-live="polite"></p>
 </form>
 </main>
 <footer id="footer"></footer>

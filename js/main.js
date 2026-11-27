@@ -10,6 +10,32 @@
   const get = (path) => path.split(".").reduce((o, k) => (o ? o[k] : undefined), C);
   const page = document.body.dataset.page;
 
+
+  /* ---------- Envoi d'un formulaire vers Formspree (arrive dans ta boîte mail) ---------- */
+  async function envoyer(f, extra, merci) {
+    const msg = $(".form-msg", f), btn = $('button[type="submit"]', f);
+    if (!f.checkValidity()) { msg.textContent = "Il manque une info : vérifie les champs."; f.reportValidity(); return; }
+    const d = new FormData(f);
+    if (d.get("_gotcha")) return;
+    d.delete("_gotcha");
+    Object.entries(extra).forEach(([k, v]) => d.append(k, v));
+    d.append("page", location.pathname);
+    btn.disabled = true;
+    msg.textContent = "Envoi en cours…";
+    try {
+      const r = await fetch(C.marque.formulaire, { method: "POST", body: new URLSearchParams(d) });
+      if (!r.ok) throw new Error();
+      const rep = await r.json().catch(() => ({}));
+      if (rep.ok === false) throw new Error();
+      f.reset();
+      f.classList.add("sent");
+      msg.textContent = merci;
+    } catch (err) {
+      btn.disabled = false;
+      msg.innerHTML = `Oups, l'envoi n'est pas passé. Réessaie, ou écris-moi à <a href="mailto:${C.marque.email}">${C.marque.email}</a>.`;
+    }
+  }
+
   /* ---------- Mot-symbole : T et H mis en avant ---------- */
   const wordmark = () =>
     '<span class="wm"><b>T</b>ropikal <b>H</b>eat</span>';
@@ -175,18 +201,38 @@
     sel.addEventListener("change", () => { ship = options[+sel.value]; showTotal(); });
     pick(variant, true);
 
-    $("#precommande").addEventListener("click", () => {
+    const poBtn = $("#precommande"), po = $("#po-form");
+    const recap = () => `${E.nom} · ${variant.nom} · taille ${size} · ${ship.nom} (${ship.prix ? euros(ship.prix) : "gratuit"}) · Total ${euros(prixDe(variant) + ship.prix)}`;
+    poBtn.addEventListener("click", () => {
       if (E.precommande.lienPaiement) {
         window.open(E.precommande.lienPaiement, "_blank", "noopener");
         return;
       }
-      const sujet = `Précommande ${E.nom} · ${variant.nom} · taille ${size}`;
-      const corps = `Bonjour,\n\nJe souhaite précommander :\n- ${E.nom} (${E.numero})\n- ${variant.nom}\n- Taille ${size}\n- Prix ${variant.prix}\n- ${ship.nom} : ${ship.prix ? euros(ship.prix) : "gratuit"}\n- Total : ${euros(prixDe(variant) + ship.prix)}\n\nMon prénom et nom :\nMon téléphone :\nMon adresse de livraison :\n\nMerci !`;
-      location.href = `mailto:${C.marque.email}?subject=${encodeURIComponent(sujet)}&body=${encodeURIComponent(corps)}`;
+      po.hidden = false;
+      poBtn.hidden = true;
+      poBtn.setAttribute("aria-expanded", "true");
+      $("#po-recap").textContent = recap();
+      $("input", po).focus();
+    });
+    /* le récap suit les choix faits après l'ouverture du formulaire */
+    [$("#variants"), $("#sizes")].forEach((w) => w.addEventListener("click", () => { if (!po.hidden) $("#po-recap").textContent = recap(); }));
+    sel.addEventListener("change", () => { if (!po.hidden) $("#po-recap").textContent = recap(); });
+    po.addEventListener("submit", (e) => {
+      e.preventDefault();
+      envoyer(po, {
+        _subject: `Précommande ${E.nom} · ${variant.nom} · ${size} · ${ship.nom}`,
+        type: "Précommande",
+        edition: `${E.nom} (${E.numero})`,
+        modele: variant.nom,
+        taille: size,
+        prix: euros(prixDe(variant)),
+        livraison: `${ship.nom} : ${ship.prix ? euros(ship.prix) : "gratuit"}`,
+        total: euros(prixDe(variant) + ship.prix)
+      }, E.precommande.merci);
     });
   }
 
-  /* ---------- Formulaire de contact (ouvre l'email) ---------- */
+  /* ---------- Formulaire de contact ---------- */
   const form = $("#contact-form");
   if (form) {
     const sel = $("#sujet");
@@ -194,39 +240,17 @@
     form.addEventListener("submit", (e) => {
       e.preventDefault();
       const d = new FormData(form);
-      const corps = `${d.get("message")}\n\n${d.get("nom")}\n${d.get("email")}`;
-      location.href = `mailto:${C.marque.email}?subject=${encodeURIComponent(d.get("sujet") + " · " + d.get("nom"))}&body=${encodeURIComponent(corps)}`;
+      envoyer(form, { _subject: `Contact · ${d.get("sujet")} · ${d.get("nom")}`, type: "Message" },
+        "Merci, ton message est bien parti ! Je te réponds très vite 🙌");
     });
   }
 
   /* ---------- Inscription à la newsletter ---------- */
   const signup = $("#signup");
   if (signup) {
-    const I = C.inscription;
-    const msg = $(".signup-msg", signup);
-    signup.addEventListener("submit", async (e) => {
+    signup.addEventListener("submit", (e) => {
       e.preventDefault();
-      if (!signup.checkValidity()) { msg.textContent = "Indique ton prénom et un email valide."; signup.reportValidity(); return; }
-      const d = new FormData(signup);
-      if (d.get("_gotcha")) return;
-      if (!I.action) {
-        const corps = `Bonjour,\n\nJe veux être prévenu de la sortie de Tropikal Heat.\n\nPrénom : ${d.get("prenom")}\nEmail : ${d.get("email")}`;
-        location.href = `mailto:${C.marque.email}?subject=${encodeURIComponent("Inscription · " + d.get("prenom"))}&body=${encodeURIComponent(corps)}`;
-        return;
-      }
-      const btn = $("button", signup);
-      btn.disabled = true;
-      msg.textContent = "Envoi en cours…";
-      try {
-        const r = await fetch(I.action, { method: "POST", body: d, headers: { Accept: "application/json" } });
-        if (!r.ok) throw new Error();
-        signup.reset();
-        msg.textContent = I.merci;
-      } catch (err) {
-        msg.textContent = "Oups, l'inscription n'est pas passée. Réessaie dans un instant.";
-      } finally {
-        btn.disabled = false;
-      }
+      envoyer(signup, { type: "Inscription" }, C.inscription.merci);
     });
   }
 

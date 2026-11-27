@@ -352,3 +352,37 @@ label.opt-label { display: block; }
 
 /* Première lettre des titres en dégradé, comme le T de Tropikal Heat */
 .ini { font-weight: 400; font-size: 1.16em; background: var(--heat); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+/* ---------- Boutique : achat sous le carrousel ---------- */
+.product { grid-template-areas: "stage head" "buy tail"; row-gap: 8px; }
+.product > .product-stage { grid-area: stage; position: relative; top: 0; }
+.product > .ed-head { grid-area: head; align-self: center; }
+.product > .ed-buy { grid-area: buy; }
+.product > .ed-tail { grid-area: tail; }
+.ed-buy .price { margin: 0.6rem 0 0.4rem; }
+.ed-tail .preorder { margin-top: 1rem; }
+@media (max-width: 900px) {
+  .product { grid-template-areas: "stage" "head" "buy" "tail"; row-gap: 0; }
+  .ed-buy .price { margin-top: 0; }
+  .product > .ed-head { margin-top: 22px; }
+  .ed-tail .preorder { margin-top: 1.6rem; }
+}
+
+/* ---------- Formulaire de précommande + messages ---------- */
+.hp { position: absolute !important; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+.po-form { display: grid; gap: 14px; margin-top: 4px; }
+.po-form[hidden] { display: none; }
+.preorder .po-recap { margin: 0 0 4px; padding: 12px 14px; border-radius: 12px; background: rgba(0, 0, 0, 0.35); font: 500 0.92rem/1.45 var(--body); color: var(--sable); }
+.po-form label { font: 600 0.75rem/1 var(--label); letter-spacing: 0.2em; text-transform: uppercase; color: var(--gris); display: grid; gap: 8px; }
+.po-form input, .po-form textarea {
+  font: 400 1rem/1.4 var(--body); color: var(--sable); background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(244, 241, 236, 0.2); border-radius: 12px; padding: 12px 14px; text-transform: none; letter-spacing: 0;
+}
+.po-form input:focus, .po-form textarea:focus { outline: 2px solid var(--mangue); outline-offset: 1px; }
+.po-form .btn { justify-self: start; margin-top: 4px; }
+.preorder .form-msg, .contact-box .form-msg { margin: 0; color: var(--mangue); font: 500 0.95rem/1.5 var(--body); }
+.contact-box .form-msg:empty, .preorder .form-msg:empty { display: none; }
+.btn[hidden] { display: none; }
+form.sent > :not(.form-msg) { display: none; }
+form.sent .form-msg { font-size: 1.05rem; }
+.contact-box.sent { text-align: center; justify-items: center; }

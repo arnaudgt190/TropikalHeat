@@ -9,6 +9,8 @@ window.CONTENT = {
     slogan: "Feel the heat",
     baseline: "Archipel // Culture // Vibration",
     email: "contact@tropikalheat.com",
+    /* Adresse du script Google (Apps Script) qui reçoit précommandes, messages et inscriptions */
+    formulaire: "https://script.google.com/macros/s/AKfycbwQsh4y664ixW-r9-txINHaNzYIUaTvSaLtTL0_vy2gVPen3EPbfHqrFqtJbVyLvuro/exec",
     instagram: "https://instagram.com/tropikalheat",
     tiktok: "https://tiktok.com/@tropikalheat",
     ville: "Le Gosier, Guadeloupe"
@@ -86,8 +88,9 @@ window.CONTENT = {
       titre: "Précommande ouverte",
       texte: "Réserve ta pièce avant la sortie officielle ! Livraison offerte au Gosier, à Pointe-à-Pitre et aux Abymes, et à partir de 3 € ailleurs en Guadeloupe.",
       /* Colle ici ton lien de paiement Stripe ou SumUp quand il est prêt.
-         Tant qu'il est vide, le bouton ouvre un email de précommande. */
-      lienPaiement: ""
+         Tant qu'il est vide, le bouton ouvre le petit formulaire de précommande. */
+      lienPaiement: "",
+      merci: "Merci ! Ta précommande est bien reçue 🔥 Je te recontacte très vite pour confirmer et organiser la livraison."
     }
   },
 
@@ -112,10 +115,7 @@ window.CONTENT = {
     texte: "Laisse ton prénom et ton email : tu seras le premier informé de l'ouverture des ventes, des prochaines éditions et des drops.",
     bouton: "Je m'inscris",
     merci: "C'est noté ! Tu seras parmi les premiers prévenus.",
-    mentions: "En t'inscrivant, tu acceptes de recevoir les emails de Tropikal Heat. Tu peux te désinscrire à tout moment.",
-    /* Colle ici l'adresse de ton formulaire Formspree (https://formspree.io/f/xxxxxxx).
-       Tant qu'elle est vide, l'inscription ouvre un email prérempli. */
-    action: "https://formspree.io/f/xvkaylbd"
+    mentions: "En t'inscrivant, tu acceptes de recevoir les emails de Tropikal Heat. Tu peux te désinscrire à tout moment."
   },
 
   contact: {

@@ -13,6 +13,7 @@ window.CONTENT = {
     formulaire: "https://script.google.com/macros/s/AKfycbwQsh4y664ixW-r9-txINHaNzYIUaTvSaLtTL0_vy2gVPen3EPbfHqrFqtJbVyLvuro/exec",
     instagram: "https://instagram.com/tropikalheat",
     tiktok: "https://tiktok.com/@tropikalheat",
+    instagramDM: "https://ig.me/m/tropikalheat",
     ville: "Le Gosier, Guadeloupe"
   },
 
@@ -87,7 +88,8 @@ window.CONTENT = {
       "Monogramme TH au cœur 6 cm · dos 27 × 36 cm",
       "Impression DTF réalisée en Guadeloupe",
       "Livraison gratuite au Gosier, à Pointe-à-Pitre et aux Abymes, à partir de 3 € ailleurs en Guadeloupe",
-      "Édition limitée à 50 pièces"
+      "Édition limitée à 50 pièces, dont les 20 premières au prix de lancement",
+      "Livraison en Guadeloupe uniquement pour l'instant (pas encore d'envoi en Martinique, en Guyane ni en métropole)"
     ],
     precommande: {
       titre: "Précommande ouverte",
@@ -125,7 +127,7 @@ window.CONTENT = {
 
   contact: {
     titre: "Je t'écoute",
-    texte: "Une question sur une taille, une précommande, une collab ? Écris-moi, je te réponds vite.",
+    texte: "Une question sur une taille, une précommande, une collab ? Écris-moi, je te réponds sous 24 à 48 h.",
     sujets: ["Précommande", "Question sur une taille", "Collaboration", "Autre"]
   }
 };

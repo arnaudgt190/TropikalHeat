@@ -269,7 +269,10 @@
       sWrap.appendChild(b);
     });
     pick(variant, true);
+    const stockL = $("#stock-launch");
+    if (stockL) stockL.hidden = !enLancement;
     document.addEventListener("lancement:maj", () => {
+      if (stockL) stockL.hidden = !enLancement;
       $$("button", vWrap).forEach((b, i) => { $("em", b).textContent = prixAffiche(E.variantes[i]); });
       pick(variant, true);
     });
@@ -382,6 +385,10 @@
     });
   }
 
+  /* ---------- Lien direct vers les messages Instagram ---------- */
+  const dm = $("#ig-dm");
+  if (dm) dm.href = C.marque.instagramDM || C.marque.instagram;
+
   /* ---------- Formulaire de contact ---------- */
   const form = $("#contact-form");
   if (form) {
@@ -447,7 +454,7 @@
 
   /* ---------- Apparition douce au défilement ---------- */
   const io = "IntersectionObserver" in window
-    ? new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && e.target.classList.add("in")), { threshold: 0.15 })
+    ? new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting && e.target.classList.add("in")), { threshold: 0.05, rootMargin: "0px 0px -40px 0px" })
     : null;
   $$(".reveal").forEach((el) => (io ? io.observe(el) : el.classList.add("in")));
 })();

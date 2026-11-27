@@ -447,3 +447,34 @@ form.sent .form-msg { font-size: 1.05rem; }
 #subtotal { font: 600 1.05rem/1 var(--label); letter-spacing: 0.02em; }
 .cart-line { align-items: center; }
 .cart[hidden], .cart-empty[hidden], .cart-box[hidden] { display: none; }
+
+/* ---------- Audit : espacements, accueil, contact ---------- */
+.section { padding: clamp(56px, 8vw, 104px) 0; }
+.hero { min-height: calc(100svh - 70px); padding: 5vh 0 7vh; }
+.hero-inner { gap: 1.1rem; }
+.hero-emblem { width: min(210px, 46vw); }
+.hero-wm { font-size: clamp(3.2rem, 9vw, 7rem); }
+.teaser .split { grid-template-columns: 1fr 1.1fr; }
+.teaser-img { display: block; border-radius: 24px; overflow: hidden; background: #0b0b0b; border: 1px solid rgba(255, 255, 255, 0.08); }
+.teaser-img img { width: 100%; height: auto; display: block; transition: transform 0.6s ease; }
+.teaser-img:hover img { transform: scale(1.03); }
+.teaser-title { font-size: clamp(2.4rem, 5vw, 3.8rem); margin: 0.6rem 0 1rem; }
+.contact-alt { margin-top: 1.2rem !important; display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center; color: var(--gris) !important; }
+.btn-sm { padding: 12px 20px; font-size: 0.78rem; }
+.page-head { padding-bottom: 28px; }
+.founder { padding-bottom: clamp(40px, 6vw, 72px); }
+.founder-feel { margin-top: 0.4rem; }
+.gothic, .page-head h1 { color: var(--sable); }
+.stock span[hidden] { display: none; }
+
+/* ---------- Page 404 ---------- */
+.notfound { padding-bottom: clamp(80px, 12vw, 140px); }
+.nf-code { font: 400 clamp(6rem, 22vw, 13rem)/0.85 var(--gothic); margin: 0 0 0.4rem; display: inline-block; }
+.nf-actions { margin-top: 2rem; }
+.hero-emblem { height: auto; }
+.hero { padding: 3vh 0 5vh; }
+.teaser-img { padding: clamp(20px, 3vw, 36px); max-width: 460px; width: 100%; justify-self: center; }
+.teaser-img img { border-radius: 8px; }
+.split-rev.section { padding: clamp(48px, 6vw, 80px) 0; }
+.split-rev .print-card { max-width: 340px; }
+.page-head .nf-code { color: transparent; }

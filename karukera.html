@@ -22,11 +22,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500&amp;display=swap">
-<link rel="stylesheet" href="css/style.css?v=20261126b">
+<link rel="stylesheet" href="css/style.css?v=20261126k">
 </head>
 <body data-page="edition">
 <header id="header"></header>
 <main>
+<div class="marquee" aria-hidden="true"><div class="marquee-track"></div></div>
 <div class="wrap product">
   <div class="product-stage">
     <div class="carousel" data-carousel data-autoplay="false" id="product-car" role="region" aria-roledescription="carrousel" aria-label="Les t-shirts KARUKERA">
@@ -45,6 +46,7 @@
 
   <div class="ed-buy">
     <p class="price" id="price" data-c="edition.prix"></p>
+    <p class="launch" id="launch" hidden></p>
 
     <p class="opt-label" id="lbl-variant">Couleur</p>
     <div id="variants" role="group" aria-labelledby="lbl-variant"></div>
@@ -52,27 +54,14 @@
     <p class="opt-label" id="lbl-size">Taille</p>
     <div id="sizes" role="group" aria-labelledby="lbl-size"></div>
 
-    <label class="opt-label" for="shipping">Livraison</label>
-    <div class="select-wrap"><select id="shipping"></select></div>
-    <p class="ship-note" id="ship-note"></p>
-    <p class="total">Total : <span id="total"></span></p>
+    <button class="btn add-btn" id="add-to-cart" type="button">Ajouter au panier</button>
+    <p class="added" id="added" role="status" hidden><span id="added-text"></span> ✓ <a href="panier.html">Voir mon panier →</a></p>
   </div>
 
   <div class="ed-tail">
     <div class="preorder">
       <h2 data-c="edition.precommande.titre"></h2>
       <p data-c="edition.precommande.texte"></p>
-      <button class="btn" id="precommande" type="button" aria-expanded="false" aria-controls="po-form">Je précommande</button>
-      <form class="po-form" id="po-form" hidden novalidate>
-        <p class="po-recap" id="po-recap"></p>
-        <label>Prénom et nom<input name="nom" required autocomplete="name"></label>
-        <label>Téléphone<input name="telephone" type="tel" required autocomplete="tel"></label>
-        <label>Email<input name="email" type="email" required autocomplete="email"></label>
-        <label>Adresse de livraison<textarea name="adresse" rows="2" required autocomplete="street-address"></textarea></label>
-        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="hp" aria-hidden="true">
-        <button class="btn" type="submit">Envoyer ma précommande</button>
-        <p class="form-msg" role="status" aria-live="polite"></p>
-      </form>
       <p class="stock">Édition limitée à <span data-c="edition.stock"></span> pièces</p>
     </div>
 
@@ -81,7 +70,7 @@
 </div>
 </main>
 <footer id="footer"></footer>
-<script src="js/content.js?v=20261126b"></script>
-<script src="js/main.js?v=20261126b"></script>
+<script src="js/content.js?v=20261126k"></script>
+<script src="js/main.js?v=20261126k"></script>
 </body>
 </html>

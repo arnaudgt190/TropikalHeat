@@ -33,12 +33,17 @@ window.CONTENT = {
     stock: 50,
     /* Une ligne par t-shirt : nom, photo du carrousel et prix.
        Change le prix des versions dégradées ici si besoin. */
+    /* Prix de lancement : valable pour les N premières pièces précommandées
+       (le compteur lit les précommandes du Google Sheet). actif: false pour l'arrêter. */
+    lancement: { actif: true, pieces: 20 },
     variantes: [
-      { id: "noir-degrade",  nom: "Noir · dos en dégradé",     mockup: "assets/lookbook/mockup-noir-TH-contour.webp",  prix: "45 €" },
-      { id: "blanc-degrade", nom: "Blanc · dos en dégradé",    mockup: "assets/lookbook/mockup-blanc-TH-contour.webp", prix: "45 €" },
-      { id: "noir",          nom: "Noir · impression blanche", mockup: "assets/lookbook/mockup-noir-basique.webp",     prix: "40 €" },
-      { id: "blanc",         nom: "Blanc · impression noire",  mockup: "assets/lookbook/mockup-blanc-basique.webp",    prix: "40 €" }
+      { id: "noir-degrade",  nom: "Noir · dos en dégradé",     mockup: "assets/lookbook/mockup-noir-TH-contour.webp",  prix: "45 €", prixLancement: "39,99 €" },
+      { id: "blanc-degrade", nom: "Blanc · dos en dégradé",    mockup: "assets/lookbook/mockup-blanc-TH-contour.webp", prix: "45 €", prixLancement: "39,99 €" },
+      { id: "noir",          nom: "Noir · impression blanche", mockup: "assets/lookbook/mockup-noir-basique.webp",     prix: "40 €", prixLancement: "34,99 €" },
+      { id: "blanc",         nom: "Blanc · impression noire",  mockup: "assets/lookbook/mockup-blanc-basique.webp",    prix: "40 €", prixLancement: "34,99 €" }
     ],
+    /* Bandeau de la Boutique (le message du prix de lancement s'ajoute devant) */
+    bandeauBoutique: ["Feel the heat", "Précommande ouverte"],
     prix: "À partir de 40 €",
     tailles: ["S", "M", "L"],
     /* Livraison (uniquement en Guadeloupe, pas d'envoi par la poste).
@@ -90,7 +95,7 @@ window.CONTENT = {
       /* Colle ici ton lien de paiement Stripe ou SumUp quand il est prêt.
          Tant qu'il est vide, le bouton ouvre le petit formulaire de précommande. */
       lienPaiement: "",
-      merci: "Merci ! Ta précommande est bien reçue 🔥 Je te recontacte très vite pour confirmer et organiser la livraison."
+      merci: "Merci ! Ta précommande est bien reçue 🔥 Je te recontacte très vite pour le paiement et la livraison. Ta pièce est à toi dès réception du paiement."
     }
   },
 

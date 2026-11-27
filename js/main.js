@@ -11,12 +11,12 @@
   const page = document.body.dataset.page;
 
 
-  /* ---------- Envoi d'un formulaire vers Formspree (arrive dans ta boîte mail) ---------- */
+  /* ---------- Envoi d'un formulaire vers le Google Apps Script (arrive dans ta boîte mail) ---------- */
   async function envoyer(f, extra, merci) {
     const msg = $(".form-msg", f), btn = $('button[type="submit"]', f);
-    if (!f.checkValidity()) { msg.textContent = "Il manque une info : vérifie les champs."; f.reportValidity(); return; }
+    if (!f.checkValidity()) { msg.textContent = "Il manque une info : vérifie les champs."; f.reportValidity(); return false; }
     const d = new FormData(f);
-    if (d.get("_gotcha")) return;
+    if (d.get("_gotcha")) return false;
     d.delete("_gotcha");
     Object.entries(extra).forEach(([k, v]) => d.append(k, v));
     d.append("page", location.pathname);
@@ -30,9 +30,11 @@
       f.reset();
       f.classList.add("sent");
       msg.textContent = merci;
+      return true;
     } catch (err) {
       btn.disabled = false;
       msg.innerHTML = `Oups, l'envoi n'est pas passé. Réessaie, ou écris-moi à <a href="mailto:${C.marque.email}">${C.marque.email}</a>.`;
+      return false;
     }
   }
 
@@ -51,10 +53,16 @@
     <a class="brand" href="index.html" aria-label="Tropikal Heat, accueil">
       <img src="assets/embleme.svg" alt="" width="44" height="37">${wordmark()}
     </a>
-    <button class="burger" aria-label="Ouvrir le menu" aria-expanded="false"><span></span><span></span></button>
     <nav aria-label="Navigation principale"><ul>
       ${nav.map(([h, l, p]) => `<li><a href="${h}" ${p === page ? 'aria-current="page"' : ""}>${l}</a></li>`).join("")}
-    </ul></nav>`;
+    </ul></nav>
+    <div class="head-actions">
+      <a class="cart-link" href="panier.html" ${page === "panier" ? 'aria-current="page"' : ""} aria-label="Mon panier">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M3 4h2.2l2.3 11.2a1.6 1.6 0 0 0 1.6 1.3h8.3a1.6 1.6 0 0 0 1.6-1.2L21 8H6.1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="9.5" cy="20" r="1.4" fill="currentColor"/><circle cx="17.5" cy="20" r="1.4" fill="currentColor"/></svg>
+        <span class="cart-count" hidden>0</span>
+      </a>
+      <button class="burger" aria-label="Ouvrir le menu" aria-expanded="false"><span></span><span></span></button>
+    </div>`;
   $(".burger").addEventListener("click", (e) => {
     const open = document.body.classList.toggle("menu-open");
     e.currentTarget.setAttribute("aria-expanded", open);
@@ -106,19 +114,116 @@
     });
   });
 
+  /* ---------- Outils prix ---------- */
+  const E = C.edition;
+  const euros = (n) => { n = Math.round(n * 100) / 100; return (Number.isInteger(n) ? n : n.toFixed(2).replace(".", ",")) + " €"; };
+  const num = (s) => parseFloat(String(s).replace(",", ".")) || 0;
+  const pluriel = (n) => n > 1 ? "s" : "";
+
+  /* ---------- Prix de lancement : pièces restantes (lues dans le Google Sheet) ---------- */
+  const LCT = E.lancement || { actif: false, pieces: 0 };
+  let enLancement = !!LCT.actif;
+  let restantes = null;
+  const prixAffiche = (v) => (enLancement && v.prixLancement) ? v.prixLancement : v.prix;
+  const prixDe = (v) => num(prixAffiche(v));
+  const restantesLancement = (async () => {
+    if (!LCT.actif || !C.marque.formulaire || !($(".marquee-track") || page === "edition" || page === "panier")) return null;
+    try {
+      const r = await fetch(C.marque.formulaire + "?action=stock");
+      const j = await r.json();
+      return typeof j.reservees === "number" ? Math.max(0, LCT.pieces - j.reservees) : null;
+    } catch (err) { return null; }
+  })();
+  restantesLancement.then((n) => {
+    if (n === null) return;
+    restantes = n;
+    if (n <= 0) enLancement = false;
+    document.dispatchEvent(new CustomEvent("lancement:maj"));
+  });
+  const texteLancement = (apres) => `<b>Prix de lancement</b> · ${restantes === null
+    ? `réservé aux ${LCT.pieces} premières pièces payées`
+    : `plus que ${restantes} pièce${pluriel(restantes)} à ce prix`}${apres ? ", puis " + apres : ""}`;
+
   /* ---------- Bandeau défilant ---------- */
   const marquee = $(".marquee-track");
   if (marquee) {
-    const words = C.accueil.bandeau.map((w) => `<span>${w}</span><i>✦</i>`).join("");
-    marquee.innerHTML = words.repeat(6);
+    const dessine = (extra) => {
+      const base = page === "edition" ? E.bandeauBoutique : C.accueil.bandeau;
+      const mots = extra ? [extra, ...base] : base;
+      marquee.innerHTML = mots.map((w) => `<span>${w}</span><i>✦</i>`).join("").repeat(6);
+      marquee.style.animationDuration = mots.length * 12 + "s"; /* même vitesse quel que soit le nombre de messages */
+    };
+    dessine(LCT.actif ? `Prix de lancement · ${LCT.pieces} premières pièces` : "");
+    restantesLancement.then((n) => {
+      if (n === null) return;
+      dessine(n > 0 ? `Prix de lancement · plus que ${n} pièce${pluriel(n)}` : "");
+    });
   }
 
-  /* ---------- Page édition : variantes, tailles, précommande ---------- */
+  /* ---------- Compteur : les chiffres d'un prix tournent quand il change ---------- */
+  const roll = (el, text) => {
+    const chars = [...text];
+    const same = el.dataset.roll && el.childElementCount === chars.length &&
+      chars.every((c, i) => /\d/.test(c) === el.children[i].classList.contains("rd"));
+    if (!same) {
+      el.dataset.roll = "1";
+      el.innerHTML = chars.map((c) => /\d/.test(c)
+        ? `<span class="rd" aria-hidden="true"><span class="rd-col">${"0123456789".split("").map((n) => `<span>${n}</span>`).join("")}</span></span>`
+        : `<span class="rc" aria-hidden="true">${c === " " ? "&nbsp;" : c}</span>`).join("");
+      el.offsetWidth; /* force le rendu avant l'animation */
+    }
+    el.setAttribute("aria-label", text);
+    chars.forEach((c, i) => {
+      if (/\d/.test(c)) el.children[i].firstChild.style.transform = `translateY(-${c}0%)`;
+    });
+  };
+
+  /* ---------- Panier (gardé dans le navigateur du visiteur) ---------- */
+  const CLE = "th-panier";
+  const lirePanier = () => {
+    try {
+      const p = JSON.parse(localStorage.getItem(CLE) || "[]");
+      return Array.isArray(p) ? p.filter((l) => E.variantes.some((v) => v.id === l.id) && l.qte > 0) : [];
+    } catch (err) { return []; }
+  };
+  let panier = lirePanier();
+  const nbArticles = () => panier.reduce((s, l) => s + l.qte, 0);
+  const majBadge = () => {
+    const n = nbArticles();
+    $$(".cart-count").forEach((el) => { el.textContent = n; el.hidden = n === 0; });
+    $$(".cart-link").forEach((el) => el.setAttribute("aria-label", `Mon panier, ${n} article${pluriel(n)}`));
+  };
+  const sauverPanier = () => {
+    try { localStorage.setItem(CLE, JSON.stringify(panier)); } catch (err) { /* navigation privée stricte : le panier vit le temps de la page */ }
+    majBadge();
+  };
+  const ajouterAuPanier = (id, taille) => {
+    const l = panier.find((x) => x.id === id && x.taille === taille);
+    if (l) l.qte += 1; else panier.push({ id, taille, qte: 1 });
+    sauverPanier();
+  };
+  majBadge();
+  /* le panier se met à jour si un autre onglet du site le modifie */
+  window.addEventListener("storage", (e) => { if (e.key === CLE) { panier = lirePanier(); majBadge(); document.dispatchEvent(new CustomEvent("panier:maj")); } });
+
+  /* ---------- Livraison par commune ---------- */
+  const L = E.livraison;
+  const frais = (km) => (km < L.gratuitSousKm ? 0 : Math.floor(km / L.trancheKm) * L.prixParTranche);
+  const versCommune = (n) => n.startsWith("Les ") ? "aux " + n.slice(4) : n.startsWith("Le ") ? "au " + n.slice(3) : n.startsWith("La ") ? "à la " + n.slice(3) : "à " + n;
+  const livraisons = L.communes.map((c) => {
+    const gosier = c.nom === "Le Gosier";
+    const prix = frais(c.km);
+    return {
+      nom: gosier ? "Livraison au Gosier" : `Livraison ${versCommune(c.nom)}`,
+      label: gosier ? "Livraison au Gosier · gratuite" : `Livraison ${versCommune(c.nom)} · ${prix ? "+ " + euros(prix) : "gratuite"}`,
+      detail: gosier ? "" : `${c.nom}, environ ${c.km} km du Gosier`,
+      prix
+    };
+  });
+
+  /* ---------- Page Boutique : variantes, tailles, ajout au panier ---------- */
   if (page === "edition") {
-    const E = C.edition;
     const car = $("#product-car");
-    const euros = (n) => (Number.isInteger(n) ? n : n.toFixed(2).replace(".", ",")) + " €";
-    const prixDe = (v) => parseFloat(String(v.prix).replace(",", ".")) || 0;
     /* Slides du carrousel construites depuis content.js */
     $(".car-track", car).innerHTML = E.variantes.map((v, i) => `
       <figure class="car-slide" aria-roledescription="diapositive" aria-label="${i + 1} sur ${E.variantes.length}">
@@ -130,31 +235,17 @@
     let variant = E.variantes[0];
     let size = E.tailles[1] || E.tailles[0];
 
-    /* Compteur : les chiffres du prix tournent quand il change */
-    const roll = (el, text) => {
-      const chars = [...text];
-      const same = el.dataset.roll && el.childElementCount === chars.length &&
-        chars.every((c, i) => /\d/.test(c) === el.children[i].classList.contains("rd"));
-      if (!same) {
-        el.dataset.roll = "1";
-        el.setAttribute("aria-label", text);
-        el.innerHTML = chars.map((c) => /\d/.test(c)
-          ? `<span class="rd" aria-hidden="true"><span class="rd-col">${"0123456789".split("").map((n) => `<span>${n}</span>`).join("")}</span></span>`
-          : `<span class="rc" aria-hidden="true">${c === " " ? "&nbsp;" : c}</span>`).join("");
-        el.offsetWidth; /* force le rendu avant l'animation */
-      }
-      el.setAttribute("aria-label", text);
-      chars.forEach((c, i) => {
-        if (/\d/.test(c)) el.children[i].firstChild.style.transform = `translateY(-${c}0%)`;
-      });
+    const majLancement = () => {
+      const el = $("#launch");
+      el.hidden = !enLancement;
+      if (enLancement) el.innerHTML = texteLancement(variant.prix);
     };
-    let showTotal = () => {};
     const pick = (v, fromCar) => {
       variant = v;
-      roll($("#price"), v.prix);
+      roll($("#price"), prixAffiche(v));
+      majLancement();
       $$("button", vWrap).forEach((b) => b.setAttribute("aria-pressed", b.dataset.id === v.id));
       if (!fromCar && car.goTo) car.goTo(E.variantes.indexOf(v));
-      showTotal();
     };
     car.addEventListener("car:change", (e) => pick(E.variantes[e.detail], true));
     E.variantes.forEach((v) => {
@@ -162,7 +253,7 @@
       b.type = "button";
       b.dataset.id = v.id;
       b.className = "swatch";
-      b.innerHTML = `<span style="background:${v.id.startsWith("noir") ? "#0b0b0b" : "#f4f1ec"}"></span>${v.nom} · ${v.prix}`;
+      b.innerHTML = `<span style="background:${v.id.startsWith("noir") ? "#0b0b0b" : "#f4f1ec"}"></span><span>${v.nom} · <em>${prixAffiche(v)}</em></span>`;
       b.addEventListener("click", () => pick(v));
       vWrap.appendChild(b);
     });
@@ -177,58 +268,117 @@
       });
       sWrap.appendChild(b);
     });
-    /* Livraison, avec le total */
-    const L = E.livraison;
-    const frais = (km) => (km < L.gratuitSousKm ? 0 : Math.floor(km / L.trancheKm) * L.prixParTranche);
-    const versCommune = (n) => n.startsWith("Les ") ? "aux " + n.slice(4) : n.startsWith("Le ") ? "au " + n.slice(3) : n.startsWith("La ") ? "à la " + n.slice(3) : "à " + n;
-    const options = L.communes.map((c) => {
-      const gosier = c.nom === "Le Gosier";
-      const prix = frais(c.km);
-      return {
-        nom: gosier ? "Livraison au Gosier" : `Livraison ${versCommune(c.nom)}`,
-        label: gosier ? "Gosier · livraison gratuite" : `Livraison ${versCommune(c.nom)} · ${prix ? "+ " + euros(prix) : "gratuit"}`,
-        detail: gosier ? "" : `${c.nom}, environ ${c.km} km du Gosier`,
-        prix
-      };
-    });
-    const sel = $("#shipping");
-    options.forEach((o, i) => sel.add(new Option(o.label, i)));
-    let ship = options[0];
-    showTotal = () => {
-      roll($("#total"), euros(prixDe(variant) + ship.prix));
-      $("#ship-note").textContent = ship.detail ? `${ship.detail} · ${ship.prix ? "frais " + euros(ship.prix) : "livraison offerte"}` : "";
-    };
-    sel.addEventListener("change", () => { ship = options[+sel.value]; showTotal(); });
     pick(variant, true);
+    document.addEventListener("lancement:maj", () => {
+      $$("button", vWrap).forEach((b, i) => { $("em", b).textContent = prixAffiche(E.variantes[i]); });
+      pick(variant, true);
+    });
 
-    const poBtn = $("#precommande"), po = $("#po-form");
-    const recap = () => `${E.nom} · ${variant.nom} · taille ${size} · ${ship.nom} (${ship.prix ? euros(ship.prix) : "gratuit"}) · Total ${euros(prixDe(variant) + ship.prix)}`;
-    poBtn.addEventListener("click", () => {
-      if (E.precommande.lienPaiement) {
-        window.open(E.precommande.lienPaiement, "_blank", "noopener");
+    const addBtn = $("#add-to-cart"), added = $("#added");
+    addBtn.addEventListener("click", () => {
+      ajouterAuPanier(variant.id, size);
+      added.hidden = false;
+      $("#added-text").textContent = `${variant.nom} · taille ${size} ajouté au panier`;
+      addBtn.classList.remove("pop"); addBtn.offsetWidth; addBtn.classList.add("pop");
+      $$(".cart-link").forEach((c) => { c.classList.remove("pop"); c.offsetWidth; c.classList.add("pop"); });
+    });
+  }
+
+  /* ---------- Page Panier ---------- */
+  if (page === "panier") {
+    const liste = $("#cart-list"), vide = $("#cart-empty"), plein = $("#cart-full");
+    const sel = $("#shipping");
+    livraisons.forEach((o, i) => sel.add(new Option(o.label, i)));
+    let ship = livraisons[0];
+    const variante = (id) => E.variantes.find((v) => v.id === id);
+    const sousTotal = () => panier.reduce((s, l) => s + prixDe(variante(l.id)) * l.qte, 0);
+
+    const dessiner = () => {
+      const n = nbArticles();
+      vide.hidden = n > 0;
+      plein.hidden = n === 0;
+      if (!n) {
+        $("#cart-count-title").textContent = "";
+        liste.innerHTML = "";
+        liste.dataset.sig = "";
         return;
       }
-      po.hidden = false;
-      poBtn.hidden = true;
-      poBtn.setAttribute("aria-expanded", "true");
-      $("#po-recap").textContent = recap();
-      $("input", po).focus();
+      /* la liste n'est reconstruite que si un article est ajouté ou supprimé,
+         sinon les chiffres (quantité, prix) tournent en place */
+      const sig = panier.map((l) => l.id + "|" + l.taille).join(",");
+      if (liste.dataset.sig !== sig) {
+        liste.dataset.sig = sig;
+        liste.innerHTML = panier.map((l, i) => {
+          const v = variante(l.id);
+          return `<li class="cart-item">
+            <img src="${v.mockup}" alt="" width="1800" height="1005" loading="lazy">
+            <div class="ci-info">
+              <p class="ci-name">${E.nom} · ${v.nom}</p>
+              <p class="ci-meta">Taille ${l.taille} · <span class="ci-unit"></span> l'unité</p>
+              <div class="ci-actions">
+                <div class="qty" role="group" aria-label="Quantité">
+                  <button type="button" data-moins="${i}" aria-label="Retirer un exemplaire">−</button>
+                  <span class="ci-qty" aria-live="polite"></span>
+                  <button type="button" data-plus="${i}" aria-label="Ajouter un exemplaire">+</button>
+                </div>
+                <button type="button" class="ci-remove" data-suppr="${i}">Supprimer</button>
+              </div>
+            </div>
+            <p class="ci-price"></p>
+          </li>`;
+        }).join("");
+      }
+      $$(".cart-item", liste).forEach((li, i) => {
+        const l = panier[i], v = variante(l.id);
+        $(".ci-unit", li).textContent = prixAffiche(v);
+        roll($(".ci-qty", li), String(l.qte));
+        roll($(".ci-price", li), euros(prixDe(v) * l.qte));
+      });
+      roll($("#subtotal"), euros(sousTotal()));
+      $("#cart-count-title").textContent = `${n} article${pluriel(n)}`;
+      $("#ship-note").textContent = ship.detail ? `${ship.detail} · ${ship.prix ? "frais " + euros(ship.prix) : "livraison offerte"}` : "";
+      roll($("#total"), euros(sousTotal() + ship.prix));
+      const lc = $("#cart-launch");
+      lc.hidden = !enLancement;
+      if (enLancement) lc.innerHTML = texteLancement("");
+    };
+    liste.addEventListener("click", (e) => {
+      const b = e.target.closest("button");
+      if (!b) return;
+      if (b.dataset.plus) panier[+b.dataset.plus].qte += 1;
+      if (b.dataset.moins) { const l = panier[+b.dataset.moins]; l.qte -= 1; if (l.qte < 1) panier.splice(+b.dataset.moins, 1); }
+      if (b.dataset.suppr) panier.splice(+b.dataset.suppr, 1);
+      sauverPanier();
+      dessiner();
     });
-    /* le récap suit les choix faits après l'ouverture du formulaire */
-    [$("#variants"), $("#sizes")].forEach((w) => w.addEventListener("click", () => { if (!po.hidden) $("#po-recap").textContent = recap(); }));
-    sel.addEventListener("change", () => { if (!po.hidden) $("#po-recap").textContent = recap(); });
-    po.addEventListener("submit", (e) => {
+    sel.addEventListener("change", () => { ship = livraisons[+sel.value]; dessiner(); });
+    document.addEventListener("lancement:maj", dessiner);
+    document.addEventListener("panier:maj", dessiner);
+    dessiner();
+
+    const po = $("#po-form");
+    po.addEventListener("submit", async (e) => {
       e.preventDefault();
-      envoyer(po, {
-        _subject: `Précommande ${E.nom} · ${variant.nom} · ${size} · ${ship.nom}`,
+      const n = nbArticles();
+      if (!n) return;
+      const lignes = panier.map((l) => { const v = variante(l.id); return `${l.qte} × ${v.nom} · taille ${l.taille} · ${euros(prixDe(v) * l.qte)}`; });
+      const ok = await envoyer(po, {
+        _subject: `Précommande ${E.nom} · ${n} pièce${pluriel(n)} · ${ship.nom}`,
         type: "Précommande",
         edition: `${E.nom} (${E.numero})`,
-        modele: variant.nom,
-        taille: size,
-        prix: euros(prixDe(variant)),
-        livraison: `${ship.nom} : ${ship.prix ? euros(ship.prix) : "gratuit"}`,
-        total: euros(prixDe(variant) + ship.prix)
+        modele: lignes.join("\n"),
+        taille: panier.map((l) => `${l.qte}×${l.taille}`).join(", "),
+        pieces: n,
+        prix: euros(sousTotal()) + (enLancement ? " (prix de lancement)" : ""),
+        livraison: `${ship.nom} : ${ship.prix ? euros(ship.prix) : "gratuite"}`,
+        total: euros(sousTotal() + ship.prix)
       }, E.precommande.merci);
+      if (ok) {
+        panier = [];
+        sauverPanier();
+        $("#cart-box").hidden = true;
+        $(".cart-head p").textContent = "";
+      }
     });
   }
 

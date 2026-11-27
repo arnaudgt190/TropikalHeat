@@ -6,7 +6,19 @@
 <title>Tropikal Heat · Streetwear né en Guadeloupe</title>
 <meta name="description" content="Tropikal Heat, streetwear né en Guadeloupe. Édition limitée KARUKERA. Feel the heat.">
 <meta name="theme-color" content="#000000">
-<link rel="icon" href="assets/favicon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Tropikal Heat">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:url" content="https://tropikalheat.com/">
+<meta property="og:title" content="Tropikal Heat · Streetwear né en Guadeloupe">
+<meta property="og:description" content="Tropikal Heat, streetwear né en Guadeloupe. Édition limitée KARUKERA. Feel the heat.">
+<meta property="og:image" content="https://tropikalheat.com/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500&amp;display=swap">
@@ -34,8 +46,31 @@
 
 <section class="section">
   <div class="wrap split">
-    <div class="print-card reveal">
-      <img src="assets/lookbook/dos-degrade-noir.webp" alt="Visuel du dos KARUKERA : soleil, corail, vague et hibiscus en dégradé" width="700" height="1014" loading="lazy">
+    <div class="reveal">
+    <div class="carousel" data-carousel role="region" aria-roledescription="carrousel" aria-label="Les t-shirts de l'édition KARUKERA">
+      <div class="car-track">
+        <figure class="car-slide" aria-roledescription="diapositive" aria-label="1 sur 4">
+          <img src="assets/lookbook/mockup-noir-TH-contour.webp" alt="T-shirt noir KARUKERA : monogramme TH en dégradé au cœur, visuel en dégradé au dos" width="1800" height="1005" loading="lazy">
+          <figcaption>T-shirt noir · dégradé</figcaption>
+        </figure>
+        <figure class="car-slide" aria-roledescription="diapositive" aria-label="2 sur 4">
+          <img src="assets/lookbook/mockup-blanc-TH-contour.webp" alt="T-shirt blanc KARUKERA : monogramme TH en dégradé au cœur, visuel en dégradé au dos" width="1800" height="1005" loading="lazy">
+          <figcaption>T-shirt blanc · dégradé</figcaption>
+        </figure>
+        <figure class="car-slide" aria-roledescription="diapositive" aria-label="3 sur 4">
+          <img src="assets/lookbook/mockup-noir-basique.webp" alt="T-shirt noir KARUKERA : monogramme TH blanc au cœur, visuel à l'encre blanche au dos" width="1800" height="1005" loading="lazy">
+          <figcaption>T-shirt noir · encre blanche</figcaption>
+        </figure>
+        <figure class="car-slide" aria-roledescription="diapositive" aria-label="4 sur 4">
+          <img src="assets/lookbook/mockup-blanc-basique.webp" alt="T-shirt blanc KARUKERA : monogramme TH noir au cœur, visuel à l'encre noire au dos" width="1800" height="1005" loading="lazy">
+          <figcaption>T-shirt blanc · encre noire</figcaption>
+        </figure>
+      </div>
+      <button class="car-btn prev" type="button" aria-label="Voir le t-shirt précédent"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button class="car-btn next" type="button" aria-label="Voir le t-shirt suivant"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9 18l6-6-6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="car-dots" role="group" aria-label="Choisir un t-shirt"></div>
+    </div>
+    <ul class="reassure" data-list="accueil.reassurance"><template><li data-f="x"></li></template></ul>
     </div>
     <div class="reveal">
       <p class="ed-num" data-c="edition.numero"></p>
@@ -54,6 +89,23 @@
     <div class="pillars reveal" data-list="univers.piliers">
       <template><article class="pillar"><h3 class="heat-text" data-f="titre"></h3><p data-f="texte"></p></article></template>
     </div>
+  </div>
+</section>
+<section class="signup-band">
+  <div class="wrap signup reveal">
+    <div>
+      <p class="label" style="color:#000">Newsletter</p>
+      <h2 class="gothic signup-title" data-c="inscription.titre"></h2>
+      <p class="signup-text" data-c="inscription.texte"></p>
+    </div>
+    <form id="signup" class="signup-form" novalidate>
+      <label>Prénom<input name="prenom" required autocomplete="given-name"></label>
+      <label>Email<input name="email" type="email" required autocomplete="email"></label>
+      <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp">
+      <button class="btn lb-btn-dark" type="submit" data-c="inscription.bouton"></button>
+      <p class="signup-legal" data-c="inscription.mentions"></p>
+      <p class="signup-msg" role="status" aria-live="polite"></p>
+    </form>
   </div>
 </section>
 </main>

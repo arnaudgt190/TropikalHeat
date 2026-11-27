@@ -174,7 +174,7 @@ a { color: inherit; }
 .preorder { margin-top: 2.2rem; padding: 26px; border-radius: 20px; background: linear-gradient(135deg, rgba(229, 23, 95, 0.16), rgba(255, 154, 31, 0.1)); border: 1px solid rgba(255, 154, 31, 0.25); }
 .preorder h2 { font: 600 1.1rem/1.2 var(--label); letter-spacing: 0.16em; text-transform: uppercase; margin: 0 0 0.4rem; }
 .preorder p { margin: 0 0 1.2rem; color: #d7d2ca; }
-.stock { font: 500 0.9rem/1.4 var(--label); letter-spacing: 0.08em; color: var(--mangue); margin-top: 12px; }
+.preorder .stock { font: 500 0.9rem/1.4 var(--label); letter-spacing: 0.08em; color: var(--mangue); margin: 22px 0 0; }
 
 /* ---------- Page univers ---------- */
 .page-head { padding: clamp(70px, 10vw, 130px) 0 40px; text-align: center; }
@@ -242,3 +242,113 @@ a { color: inherit; }
 @media (max-width: 700px) {
   .lb-caption { position: static; display: flex; max-width: none; margin: 0; border-radius: 0; padding: 14px 6vw; background: #0b0809; }
 }
+
+/* ---------- Accueil : carrousel des t-shirts ---------- */
+.carousel { position: relative; border-radius: 28px; overflow: hidden; background: #cdcac6; border: 1px solid rgba(255, 255, 255, 0.06); }
+.car-track { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; scrollbar-width: none; }
+.car-track::-webkit-scrollbar { display: none; }
+.car-slide { flex: 0 0 100%; margin: 0; position: relative; scroll-snap-align: start; }
+.car-slide img { width: 100%; height: auto; }
+.car-slide figcaption {
+  position: absolute; left: 16px; bottom: 16px; padding: 8px 14px; border-radius: 999px;
+  background: rgba(0, 0, 0, 0.82); color: var(--sable);
+  font: 600 0.72rem/1 var(--label); letter-spacing: 0.2em; text-transform: uppercase;
+}
+.car-btn {
+  position: absolute; top: 50%; translate: 0 -50%; width: 44px; height: 44px; border-radius: 50%;
+  display: grid; place-items: center; border: 0; cursor: pointer;
+  background: rgba(0, 0, 0, 0.7); color: var(--sable); transition: background 0.2s ease;
+}
+.car-btn:hover { background: #000; }
+.car-btn.prev { left: 12px; }
+.car-btn.next { right: 12px; }
+.car-dots { position: absolute; right: 16px; bottom: 18px; display: flex; gap: 8px; }
+.car-dots button { width: 10px; height: 10px; padding: 0; border-radius: 50%; border: 0; cursor: pointer; background: rgba(0, 0, 0, 0.3); }
+.car-dots button[aria-current="true"] { background: var(--corail); width: 26px; border-radius: 999px; }
+.car-dots button::after { content: ""; position: absolute; inset: -12px; }
+.car-dots button { position: relative; }
+@media (prefers-reduced-motion: reduce) { .car-track { scroll-behavior: auto; } }
+
+/* ---------- Accueil : réassurance ---------- */
+.reassure { list-style: none; padding: 0; margin: 16px 0 0; display: flex; flex-wrap: wrap; gap: 8px 22px; }
+.reassure li { font: 500 0.8rem/1.4 var(--label); letter-spacing: 0.12em; text-transform: uppercase; color: #c9c4bb; }
+.reassure li::before { content: "✦"; margin-right: 8px; color: var(--corail); }
+
+/* ---------- Newsletter ---------- */
+.signup-band { background: var(--heat-x); color: #000; padding: clamp(60px, 9vw, 110px) 0; }
+.signup { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 72px); align-items: center; }
+@media (max-width: 860px) { .signup { grid-template-columns: 1fr; } }
+.signup-title { font-size: clamp(2.4rem, 5vw, 3.8rem); margin: 0.5rem 0 0.8rem; }
+.signup-text { margin: 0; max-width: 46ch; color: #1a1112; }
+.signup-form { display: grid; gap: 14px; }
+.signup-form label { font: 600 0.78rem/1 var(--label); letter-spacing: 0.22em; text-transform: uppercase; display: grid; gap: 8px; }
+.signup-form input { font: 400 1rem/1.5 var(--body); color: #000; background: rgba(255, 255, 255, 0.85); border: 1.5px solid rgba(0, 0, 0, 0.25); border-radius: 14px; padding: 12px 16px; min-height: 50px; }
+.signup-form input:focus-visible { outline: 2px solid #000; outline-offset: 2px; }
+.signup-form .btn { justify-self: start; }
+.signup-form .btn:disabled { opacity: 0.6; cursor: wait; }
+.signup-legal { font-size: 0.8rem; line-height: 1.4; margin: 0; color: #2a1c1d; }
+.signup-msg { font: 600 0.95rem/1.4 var(--label); margin: 0; min-height: 1.4em; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+
+/* ---------- Univers : le fondateur ---------- */
+.founder-photo { aspect-ratio: 4 / 5; border-radius: 28px; overflow: hidden; display: grid; place-items: center; background: linear-gradient(160deg, var(--mangue) 0%, var(--corail) 50%, var(--hibiscus) 100%); }
+.founder-photo img { width: 100%; height: 100%; object-fit: cover; }
+.founder-photo img.placeholder { width: min(220px, 50%); height: auto; object-fit: contain; }
+.founder-quote { font-size: 1.15rem; line-height: 1.6; color: #e4ded6; margin: 0 0 1rem; max-width: 52ch; }
+.founder-call { color: #d7d2ca; margin: 0 0 1.4rem; }
+.founder-sign { font: 400 1.8rem/1 var(--gothic); margin: 0; background: var(--heat-x); -webkit-background-clip: text; background-clip: text; color: transparent; display: inline-block; }
+
+/* ---------- Page édition : retrait ou livraison ---------- */
+label.opt-label { display: block; }
+.select-wrap { position: relative; max-width: 460px; }
+.select-wrap::after { content: ""; position: absolute; right: 18px; top: 50%; width: 9px; height: 9px; border-right: 2px solid var(--mangue); border-bottom: 2px solid var(--mangue); transform: translateY(-70%) rotate(45deg); pointer-events: none; }
+#shipping {
+  width: 100%; min-height: 52px; padding: 0 46px 0 18px; border-radius: 16px; appearance: none; -webkit-appearance: none;
+  font: 500 0.98rem/1.2 var(--body); color: var(--sable); background: #0c0c0c; border: 1.5px solid rgba(244, 241, 236, 0.25); cursor: pointer;
+}
+#shipping:focus-visible { outline: 2px solid var(--mangue); outline-offset: 3px; }
+#shipping option { background: #0c0c0c; color: var(--sable); }
+.ship-note { font-size: 0.88rem; color: var(--gris); margin: 10px 0 0; }
+.total { font: 600 1.2rem/1 var(--label); margin: 1.4rem 0 0; }
+.total span { color: var(--mangue); }
+
+/* ---------- Page édition : carrousel des t-shirts ---------- */
+.product-stage:has(.carousel) { padding: 0; border: 0; background: none; display: block; }
+.product-stage .carousel .tag { z-index: 2; background: rgba(0, 0, 0, 0.82); color: var(--sable); }
+#variants button { font-size: 0.9rem; }
+
+/* ---------- Compteur de prix ---------- */
+.rd { display: inline-block; height: 1em; line-height: 1; overflow: hidden; vertical-align: bottom; }
+.rd-col { display: flex; flex-direction: column; transition: transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.rd-col span { display: block; height: 1em; line-height: 1; }
+.rc { display: inline-block; line-height: 1; }
+@media (prefers-reduced-motion: reduce) { .rd-col { transition: none; } }
+
+/* ---------- Univers : fondateur (texte à gauche, photo à droite) ---------- */
+.founder { display: grid; grid-template-columns: 1.5fr minmax(0, 1fr); gap: 0 clamp(28px, 5vw, 72px); align-items: center; padding-top: 0; position: relative; }
+.founder .founder-photo { max-width: 340px; width: 100%; justify-self: end; }
+.founder-feel {
+  grid-column: 1 / -1; justify-self: end; margin: 1.4rem 2% 0 0;
+  font: 400 clamp(2.4rem, 5vw, 3.6rem)/1 var(--gothic); transform: rotate(-6deg); transform-origin: right center;
+}
+@media (max-width: 760px) {
+  .founder { grid-template-columns: 1fr; }
+  .founder .founder-photo { order: -1; max-width: 260px; justify-self: start; }
+  .founder-feel { justify-self: end; margin-right: 6%; }
+}
+
+/* Test : photo à gauche, texte à droite ; texte de l'emblème à gauche */
+.split-rev { grid-template-columns: 1fr 1.05fr; }
+@media (max-width: 860px) { .split-rev .print-card { order: -1; } }
+.founder { grid-template-columns: minmax(0, 1fr) 1.5fr; }
+.founder .founder-photo { justify-self: start; }
+@media (max-width: 860px) { .split-rev { grid-template-columns: 1fr; } }
+@media (max-width: 760px) { .founder { grid-template-columns: 1fr; row-gap: 28px; } }
+/* Emblème : image réduite, collée à droite */
+.split-rev { grid-template-columns: 1.2fr minmax(0, 1fr); }
+.split-rev .print-card { max-width: 400px; width: 100%; aspect-ratio: 1 / 1; display: grid; place-items: center; justify-self: end; padding: 32px; }
+.split-rev .print-card img { width: min(300px, 82%) !important; height: auto; }
+@media (max-width: 860px) { .split-rev { grid-template-columns: 1fr; } .split-rev .print-card { justify-self: start; max-width: 260px; } }
+
+/* Première lettre des titres en dégradé, comme le T de Tropikal Heat */
+.ini { font-weight: 400; font-size: 1.16em; background: var(--heat); -webkit-background-clip: text; background-clip: text; color: transparent; }

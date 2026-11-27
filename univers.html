@@ -4,9 +4,21 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>L'univers · Tropikal Heat</title>
-<meta name="description" content="Tropikal Heat : archipel, culture, 971. Un streetwear pensé, dessiné et imprimé en Guadeloupe.">
+<meta name="description" content="Tropikal Heat : archipel, culture, vibration. Un streetwear pensé, dessiné et imprimé en Guadeloupe.">
 <meta name="theme-color" content="#000000">
-<link rel="icon" href="assets/favicon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Tropikal Heat">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:url" content="https://tropikalheat.com/univers.html">
+<meta property="og:title" content="L'univers · Tropikal Heat">
+<meta property="og:description" content="Tropikal Heat : archipel, culture, vibration. Un streetwear pensé, dessiné et imprimé en Guadeloupe.">
+<meta property="og:image" content="https://tropikalheat.com/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500&amp;display=swap">
@@ -17,7 +29,7 @@
 <main>
 <section class="page-head wrap">
   <p class="label" data-c="marque.baseline"></p>
-  <h1 data-c="univers.titre"></h1>
+  <h1 data-c="univers.titre" data-initial></h1>
   <p data-c="univers.intro"></p>
 </section>
 
@@ -27,18 +39,27 @@
   </div>
 </section>
 
-<section class="section wrap split">
-  <div class="print-card reveal"><img src="assets/embleme.svg" alt="Emblème Tropikal Heat" width="420" height="356" loading="lazy" style="width:min(360px,100%)"></div>
+<section class="section wrap split split-rev">
   <div class="reveal">
     <p class="label">L'emblème</p>
     <h2 class="gothic" style="font-size:clamp(2.4rem,5vw,3.8rem);margin:.6rem 0 1rem">Un soleil, une fleur.</h2>
     <p class="ed-text">Le soleil qui se lève sur l'archipel, et l'hibiscus qui pousse partout chez nous. Deux symboles simples, réunis dans un emblème qu'on retrouve sur chaque pièce.</p>
   </div>
+  <div class="print-card reveal"><img src="assets/embleme.svg" alt="Emblème Tropikal Heat" width="420" height="356" loading="lazy" style="width:min(360px,100%)"></div>
 </section>
 
-<section class="manifesto wrap">
-  <blockquote class="heat-text">Feel the heat.</blockquote>
-  <cite data-c="univers.signature"></cite>
+<section class="section wrap founder">
+  <div class="founder-photo reveal">
+    <img src="assets/fondateur.jpg" alt="Arnaud, fondateur de Tropikal Heat" width="800" height="1000" loading="lazy">
+  </div>
+  <div class="founder-text reveal">
+    <p class="label">Le fondateur</p>
+    <h2 class="gothic" style="font-size:clamp(3rem,7vw,5rem);margin:.6rem 0 1.2rem" data-c="univers.fondateur.prenom"></h2>
+    <p class="founder-quote" data-c="univers.fondateur.texte"></p>
+    <p class="founder-call" data-c="univers.fondateur.appel"></p>
+    <p class="founder-sign" data-c="univers.signature"></p>
+  </div>
+  <p class="founder-feel heat-text" aria-hidden="true">Feel the heat.</p>
 </section>
 </main>
 <footer id="footer"></footer>

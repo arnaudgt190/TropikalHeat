@@ -3,10 +3,22 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>KARUKERA · Édition 01 · Tropikal Heat</title>
+<title>Boutique · KARUKERA Édition 01 · Tropikal Heat</title>
 <meta name="description" content="Précommande ouverte : t-shirt KARUKERA, édition limitée à 50 pièces, imprimé en Guadeloupe.">
 <meta name="theme-color" content="#000000">
-<link rel="icon" href="assets/favicon.png">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Tropikal Heat">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:url" content="https://tropikalheat.com/karukera.html">
+<meta property="og:title" content="Boutique · KARUKERA Édition 01 · Tropikal Heat">
+<meta property="og:description" content="Précommande ouverte : t-shirt KARUKERA, édition limitée à 50 pièces, imprimé en Guadeloupe.">
+<meta property="og:image" content="https://tropikalheat.com/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="icon" type="image/png" sizes="64x64" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500&amp;display=swap">
@@ -17,20 +29,30 @@
 <main>
 <div class="wrap product">
   <div class="product-stage">
-    <span class="tag" data-c="edition.numero"></span>
-    <img id="variant-img" src="assets/lookbook/dos-degrade-noir.webp" alt="" width="700" height="1014">
+    <div class="carousel" data-carousel data-autoplay="false" id="product-car" role="region" aria-roledescription="carrousel" aria-label="Les t-shirts KARUKERA">
+      <div class="car-track"></div>
+      <span class="tag" data-c="edition.numero"></span>
+      <button class="car-btn prev" type="button" aria-label="Voir le t-shirt précédent"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button class="car-btn next" type="button" aria-label="Voir le t-shirt suivant"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M9 18l6-6-6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <div class="car-dots" role="group" aria-label="Choisir un t-shirt"></div>
+    </div>
   </div>
   <div>
     <p class="label" data-c="edition.accroche"></p>
-    <h1 class="ed-title heat-text" data-c="edition.nom"></h1>
+    <h1 class="ed-title" data-c="edition.nom" data-initial></h1>
     <p class="ed-text" data-c="edition.texte"></p>
-    <p class="price" data-c="edition.prix"></p>
+    <p class="price" id="price" data-c="edition.prix"></p>
 
     <p class="opt-label" id="lbl-variant">Couleur</p>
     <div id="variants" role="group" aria-labelledby="lbl-variant"></div>
 
     <p class="opt-label" id="lbl-size">Taille</p>
     <div id="sizes" role="group" aria-labelledby="lbl-size"></div>
+
+    <label class="opt-label" for="shipping">Livraison</label>
+    <div class="select-wrap"><select id="shipping"></select></div>
+    <p class="ship-note" id="ship-note"></p>
+    <p class="total">Total : <span id="total"></span></p>
 
     <div class="preorder">
       <h2 data-c="edition.precommande.titre"></h2>
@@ -40,7 +62,6 @@
     </div>
 
     <ul class="details" data-list="edition.details"><template><li data-f="x"></li></template></ul>
-    <p style="margin-top:1.6rem"><a class="btn ghost" href="lookbook.html">Voir le lookbook</a></p>
   </div>
 </div>
 </main>

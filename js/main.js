@@ -17,8 +17,7 @@
   /* ---------- En-tête et pied de page communs ---------- */
   const nav = [
     ["index.html", "Accueil", "accueil"],
-    ["karukera.html", "Karukera", "edition"],
-    ["lookbook.html", "Lookbook", "lookbook"],
+    ["karukera.html", "Boutique", "edition"],
     ["univers.html", "Univers", "univers"],
     ["contact.html", "Contact", "contact"]
   ];
@@ -56,6 +55,17 @@
     if (v !== undefined) el.textContent = v;
   });
 
+  /* ---------- Première lettre en dégradé : data-initial ---------- */
+  $$("[data-initial]").forEach((el) => {
+    const t = el.textContent;
+    if (!t) return;
+    const b = document.createElement("b");
+    b.className = "ini";
+    b.textContent = t[0];
+    el.textContent = t.slice(1);
+    el.prepend(b);
+  });
+
   /* ---------- Listes : data-list="chemin" + <template> ---------- */
   $$("[data-list]").forEach((el) => {
     const items = get(el.dataset.list) || [];
@@ -80,27 +90,53 @@
   /* ---------- Page édition : variantes, tailles, précommande ---------- */
   if (page === "edition") {
     const E = C.edition;
-    const img = $("#variant-img");
-    const stage = $(".product-stage");
+    const car = $("#product-car");
+    const euros = (n) => (Number.isInteger(n) ? n : n.toFixed(2).replace(".", ",")) + " €";
+    const prixDe = (v) => parseFloat(String(v.prix).replace(",", ".")) || 0;
+    /* Slides du carrousel construites depuis content.js */
+    $(".car-track", car).innerHTML = E.variantes.map((v, i) => `
+      <figure class="car-slide" aria-roledescription="diapositive" aria-label="${i + 1} sur ${E.variantes.length}">
+        <img src="${v.mockup}" alt="T-shirt KARUKERA ${v.nom}, devant et dos" width="1800" height="1005"${i ? ' loading="lazy"' : ""}>
+        <figcaption>${v.nom}</figcaption>
+      </figure>`).join("");
     const vWrap = $("#variants");
     const sWrap = $("#sizes");
     let variant = E.variantes[0];
     let size = E.tailles[1] || E.tailles[0];
 
-    const pick = (v) => {
-      variant = v;
-      img.src = v.image;
-      img.alt = `Dos KARUKERA, ${v.nom}`;
-      stage.style.background = v.fond;
-      stage.classList.toggle("light", !!v.clair);
-      $$("button", vWrap).forEach((b) => b.setAttribute("aria-pressed", b.dataset.id === v.id));
+    /* Compteur : les chiffres du prix tournent quand il change */
+    const roll = (el, text) => {
+      const chars = [...text];
+      const same = el.dataset.roll && el.childElementCount === chars.length &&
+        chars.every((c, i) => /\d/.test(c) === el.children[i].classList.contains("rd"));
+      if (!same) {
+        el.dataset.roll = "1";
+        el.setAttribute("aria-label", text);
+        el.innerHTML = chars.map((c) => /\d/.test(c)
+          ? `<span class="rd" aria-hidden="true"><span class="rd-col">${"0123456789".split("").map((n) => `<span>${n}</span>`).join("")}</span></span>`
+          : `<span class="rc" aria-hidden="true">${c === " " ? "&nbsp;" : c}</span>`).join("");
+        el.offsetWidth; /* force le rendu avant l'animation */
+      }
+      el.setAttribute("aria-label", text);
+      chars.forEach((c, i) => {
+        if (/\d/.test(c)) el.children[i].firstChild.style.transform = `translateY(-${c}0%)`;
+      });
     };
+    let showTotal = () => {};
+    const pick = (v, fromCar) => {
+      variant = v;
+      roll($("#price"), v.prix);
+      $$("button", vWrap).forEach((b) => b.setAttribute("aria-pressed", b.dataset.id === v.id));
+      if (!fromCar && car.goTo) car.goTo(E.variantes.indexOf(v));
+      showTotal();
+    };
+    car.addEventListener("car:change", (e) => pick(E.variantes[e.detail], true));
     E.variantes.forEach((v) => {
       const b = document.createElement("button");
       b.type = "button";
       b.dataset.id = v.id;
       b.className = "swatch";
-      b.innerHTML = `<span style="background:${v.fond}"></span>${v.nom}`;
+      b.innerHTML = `<span style="background:${v.id.startsWith("noir") ? "#0b0b0b" : "#f4f1ec"}"></span>${v.nom} · ${v.prix}`;
       b.addEventListener("click", () => pick(v));
       vWrap.appendChild(b);
     });
@@ -115,7 +151,29 @@
       });
       sWrap.appendChild(b);
     });
-    pick(variant);
+    /* Livraison, avec le total */
+    const L = E.livraison;
+    const frais = (km) => (km < L.gratuitSousKm ? 0 : Math.floor(km / L.trancheKm) * L.prixParTranche);
+    const versCommune = (n) => n.startsWith("Les ") ? "aux " + n.slice(4) : n.startsWith("Le ") ? "au " + n.slice(3) : n.startsWith("La ") ? "à la " + n.slice(3) : "à " + n;
+    const options = L.communes.map((c) => {
+      const gosier = c.nom === "Le Gosier";
+      const prix = frais(c.km);
+      return {
+        nom: gosier ? "Livraison au Gosier" : `Livraison ${versCommune(c.nom)}`,
+        label: gosier ? "Gosier · livraison gratuite" : `Livraison ${versCommune(c.nom)} · ${prix ? "+ " + euros(prix) : "gratuit"}`,
+        detail: gosier ? "" : `${c.nom}, environ ${c.km} km du Gosier`,
+        prix
+      };
+    });
+    const sel = $("#shipping");
+    options.forEach((o, i) => sel.add(new Option(o.label, i)));
+    let ship = options[0];
+    showTotal = () => {
+      roll($("#total"), euros(prixDe(variant) + ship.prix));
+      $("#ship-note").textContent = ship.detail ? `${ship.detail} · ${ship.prix ? "frais " + euros(ship.prix) : "livraison offerte"}` : "";
+    };
+    sel.addEventListener("change", () => { ship = options[+sel.value]; showTotal(); });
+    pick(variant, true);
 
     $("#precommande").addEventListener("click", () => {
       if (E.precommande.lienPaiement) {
@@ -123,7 +181,7 @@
         return;
       }
       const sujet = `Précommande ${E.nom} · ${variant.nom} · taille ${size}`;
-      const corps = `Bonjour,\n\nJe souhaite précommander :\n- ${E.nom} (${E.numero})\n- ${variant.nom}\n- Taille ${size}\n- Prix ${E.prix}\n\nMon prénom et nom :\nMon téléphone :\nRemise en main propre ou envoi :\n\nMerci !`;
+      const corps = `Bonjour,\n\nJe souhaite précommander :\n- ${E.nom} (${E.numero})\n- ${variant.nom}\n- Taille ${size}\n- Prix ${variant.prix}\n- ${ship.nom} : ${ship.prix ? euros(ship.prix) : "gratuit"}\n- Total : ${euros(prixDe(variant) + ship.prix)}\n\nMon prénom et nom :\nMon téléphone :\nMon adresse de livraison :\n\nMerci !`;
       location.href = `mailto:${C.marque.email}?subject=${encodeURIComponent(sujet)}&body=${encodeURIComponent(corps)}`;
     });
   }
@@ -140,6 +198,78 @@
       location.href = `mailto:${C.marque.email}?subject=${encodeURIComponent(d.get("sujet") + " · " + d.get("nom"))}&body=${encodeURIComponent(corps)}`;
     });
   }
+
+  /* ---------- Inscription à la newsletter ---------- */
+  const signup = $("#signup");
+  if (signup) {
+    const I = C.inscription;
+    const msg = $(".signup-msg", signup);
+    signup.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!signup.checkValidity()) { msg.textContent = "Indique ton prénom et un email valide."; signup.reportValidity(); return; }
+      const d = new FormData(signup);
+      if (d.get("_gotcha")) return;
+      if (!I.action) {
+        const corps = `Bonjour,\n\nJe veux être prévenu de la sortie de Tropikal Heat.\n\nPrénom : ${d.get("prenom")}\nEmail : ${d.get("email")}`;
+        location.href = `mailto:${C.marque.email}?subject=${encodeURIComponent("Inscription · " + d.get("prenom"))}&body=${encodeURIComponent(corps)}`;
+        return;
+      }
+      const btn = $("button", signup);
+      btn.disabled = true;
+      msg.textContent = "Envoi en cours…";
+      try {
+        const r = await fetch(I.action, { method: "POST", body: d, headers: { Accept: "application/json" } });
+        if (!r.ok) throw new Error();
+        signup.reset();
+        msg.textContent = I.merci;
+      } catch (err) {
+        msg.textContent = "Oups, l'inscription n'est pas passée. Réessaie dans un instant.";
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  }
+
+  /* ---------- Carrousel (accueil) ---------- */
+  $$("[data-carousel]").forEach((car) => {
+    const track = $(".car-track", car);
+    const slides = $$(".car-slide", car);
+    const dotsWrap = $(".car-dots", car);
+    let index = 0;
+    const dots = slides.map((s, i) => {
+      const d = document.createElement("button");
+      d.type = "button";
+      d.setAttribute("aria-label", `Voir ${s.querySelector("figcaption").textContent.toLowerCase()}`);
+      d.addEventListener("click", () => go(i));
+      dotsWrap.appendChild(d);
+      return d;
+    });
+    const mark = () => {
+      dots.forEach((d, i) => d.setAttribute("aria-current", i === index));
+      car.dispatchEvent(new CustomEvent("car:change", { detail: index }));
+    };
+    const go = (i) => {
+      index = (i + slides.length) % slides.length;
+      track.scrollTo({ left: index * track.clientWidth });
+      mark();
+    };
+    car.goTo = (i) => { if (i !== index) { stop(); go(i); } };
+    $(".prev", car).addEventListener("click", () => { go(index - 1); stop(); });
+    $(".next", car).addEventListener("click", () => { go(index + 1); stop(); });
+    track.addEventListener("scroll", () => {
+      const i = Math.round(track.scrollLeft / track.clientWidth);
+      if (i !== index) { index = i; mark(); }
+    }, { passive: true });
+    mark();
+    // Défilement automatique toutes les 5 s, en pause au survol et arrêté dès qu'on clique
+    const calme = window.matchMedia("(prefers-reduced-motion: reduce)").matches || car.dataset.autoplay === "false";
+    let timer = calme ? null : setInterval(() => go(index + 1), 5000);
+    const stop = () => { clearInterval(timer); timer = null; };
+    car.addEventListener("mouseenter", () => { if (timer) { clearInterval(timer); timer = "pause"; } });
+    car.addEventListener("mouseleave", () => { if (timer === "pause") timer = setInterval(() => go(index + 1), 5000); });
+    car.addEventListener("focusin", stop);
+    track.addEventListener("touchstart", stop, { passive: true });
+  });
 
   /* ---------- Apparition douce au défilement ---------- */
   const io = "IntersectionObserver" in window
